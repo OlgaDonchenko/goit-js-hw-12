@@ -8,7 +8,7 @@
   align-items: center;
 
 
-  /* height: 40px; */
+
 }
 
 button {
@@ -16,11 +16,15 @@ button {
   border-radius: 10px;
   border: none;
   margin-left: 20px;
-  color: rgb(45, 45, 45);
+  color: whitesmoke;
   width: 150px;
-  height: 20px;
+  height: 30px;
   cursor: pointer;
 
+}
+button:hover,
+button:focus {
+  background-color: #6886f2;
 }
 
 .gallery {
@@ -184,3 +188,26 @@ button {
     transform: scale(0.9);
   }
 }
+
+.load-more {
+  
+width: 180px;
+  height: 20 px;
+    font-size: 20px;
+  color: white;
+}
+.load-more:hover,
+.load-more:focus {
+  background-color: #6886f2;
+}
+.load-more-btn-cover {
+
+
+    margin-top: 16px;
+      display: flex;
+      justify-content: center;
+
+}
+
+
+

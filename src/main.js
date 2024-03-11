@@ -6,15 +6,22 @@ import { createMarkup, initializeLightbox } from './js/render-functions';
 const formSearch = document.querySelector('.form-search');
 const listImages = document.querySelector('.gallery');
 const loader = document.querySelector('.lds-heart');
+const loadMoreBtn = document.querySelector('.load-more');
 
 loader.style.display = 'none';
 
 formSearch.addEventListener('submit', onSearch);
+loadMoreBtn.addEventListener('click', onLoadMore);
+
+let currentPage = 1;
+let currentQuery = '';
 
 function onSearch(event) {
     event.preventDefault();
 
-    if (formSearch.elements.search.value.trim() === '') {
+    const searchValue = formSearch.elements.search.value.trim();
+
+    if (searchValue === '') {
         iziToast.show({
             message: `The search query cannot be empty`,
             timeout: 5000,
@@ -32,11 +39,9 @@ function onSearch(event) {
     }
 
     loader.style.display = 'block';
-    const inputValue = formSearch.elements.search.value.trim();
-
     listImages.innerHTML = '';
 
-    getPictures(inputValue)
+    getPictures(searchValue, currentPage)
         .then(data => {
             if (!data.hits.length) {
                 iziToast.show({
@@ -55,7 +60,62 @@ function onSearch(event) {
             listImages.insertAdjacentHTML('afterbegin', createMarkup(data.hits));
             initializeLightbox();
 
-            formSearch.reset();
+            if (data.totalHits > currentPage * 15) {
+                loadMoreBtn.style.display = 'block';
+            } else {
+                loadMoreBtn.style.display = 'none';
+            }
+
+            currentQuery = searchValue;
+            currentPage = 1;
+        })
+        .catch((error) => {
+            console.log(error);
+            iziToast.show({
+                title: 'Sorry,',
+                message: 'Try again!',
+                position: 'bottomLeft',
+                backgroundColor:'#ef4040',
+                messageSize: 16,
+                messageColor: '#fff',
+                titleSize: 16,
+                titleColor: '#fff',
+                iconUrl: iconRejected,
+            });
+        })
+        .finally(() => loader.style.display = 'none');
+}
+
+function onLoadMore() {
+    loader.style.display = 'block';
+    loadMoreBtn.style.display = 'none';
+
+    currentPage++;
+
+    getPictures(currentQuery, currentPage)
+        .then(data => {
+            if (!data.hits.length) {
+                iziToast.show({
+                    title: 'Sorry,',
+                    message: 'There are no more images to load.',
+                    position: 'bottomLeft',
+                    backgroundColor: '#ef4040',
+                    messageSize: 16,
+                    messageColor: '#fff',
+                    titleSize: 16,
+                    titleColor: '#fff',
+                    iconUrl: iconRejected,
+                });
+            }
+
+            listImages.insertAdjacentHTML('beforeend', createMarkup(data.hits));
+            initializeLightbox();
+
+            if (data.totalHits > currentPage * 15) {
+                loadMoreBtn.style.display = 'block';
+            } else {
+                loadMoreBtn.style.display = 'none';
+            }
         })
         .catch((error) => {
             console.log(error);
@@ -73,3 +133,7 @@ function onSearch(event) {
         })
         .finally(() => loader.style.display = 'none');
 }
+
+
+
+
