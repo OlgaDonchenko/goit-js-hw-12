@@ -1,24 +1,26 @@
 
-import iconRejected from '../img/octagon.png';
-export function getPictures(name) {
-    const BASE_URL = 'https://pixabay.com/api/';
-    const KEY = '42458918-8f01ea81f4ffacec8edc4f5cf';
+import axios from 'axios';
 
-    const searchParams = new URLSearchParams({
-        key: KEY,
-        q: name,
-        image_type: 'photo',
-        orientation: 'horizontal',
-        safesearch: true,
-    })
+export async function getPictures(name, page = 1, perPage = 15) {
+    try {
+        const BASE_URL = 'https://pixabay.com/api/';
+        const KEY = '42458918-8f01ea81f4ffacec8edc4f5cf';
 
-    return fetch(`${BASE_URL}?${searchParams}`)
-        .then(response => {
-            if (!response.ok) {
-                throw new Error(response.statusText);
+        const response = await axios.get(BASE_URL, {
+            params: {
+                key: KEY,
+                q: name,
+                page: page,
+                per_page: perPage,
+                image_type: 'photo',
+                orientation: 'horizontal',
+                safesearch: true,
             }
-            return response.json();
         });
-}
 
-export { iconRejected };
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        throw new Error('Error fetching pictures from Pixabay API');
+    }
+}
