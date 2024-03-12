@@ -1,5 +1,7 @@
 
 import SimpleLightbox from 'simplelightbox';
+// import iconRejected from '../img/octagon.png';
+
 
 export function createMarkup(arr) {
     return arr.map(({ webformatURL, largeImageURL, tags, likes, views, comments, downloads }) =>
