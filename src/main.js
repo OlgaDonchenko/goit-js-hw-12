@@ -2,6 +2,7 @@ import iziToast from 'izitoast';
 import 'izitoast/dist/css/iziToast.min.css';
 import { getPictures } from './js/pixabay-api';
 import { createMarkup, initializeLightbox } from './js/render-functions';
+import 'simplelightbox/dist/simple-lightbox.min.css';
 
 const formSearch = document.querySelector('.form-search');
 const gallery = document.querySelector('.gallery');
@@ -19,7 +20,7 @@ loadMoreBtn.addEventListener('click', onLoadMore);
 
 async function onSearch(event) {
     event.preventDefault();
-
+currentPage = 1;
     const searchValue = formSearch.elements.search.value.trim();
 
     if (searchValue === '') {
@@ -138,4 +139,8 @@ function handleLoadMoreResult(data) {
     } else {
         loadMoreBtn.style.display = 'none';
     }
+    window.scrollBy({
+        top: firstGalleryItem.getBoundingClientRect().height * 2, // Скролл на висоту двох зображень
+        behavior: 'smooth',
+    });
 }
